@@ -12,7 +12,7 @@ class InterviewBot:
     Class representing the Interview chatbot.
     """
     char = 'f4hEGbw8ywUrjsrye03EJxiBdooy--HiOWgU2EiRJ0s'
-    token = '67c42f8f986f526fe33a8630b9bdbbf97b219783'                                                                                                                                             
+    token = '67c42f8f986f526fe33a8630b9bdbbf97b219783'
     tts_engine = pyttsx3.init()
 
     async def start_chat(self):
@@ -27,9 +27,9 @@ class InterviewBot:
                 new_chat, first_message = await chat.new_chat(self.char, me.id)
                 return chat, new_chat, first_message
         except Exception as e:
-            st.write(f"An error occurred: {e                                                        }")
+            st.write(f"An error occurred: {e}")
             return None, None, None
-                      
+
     def __init__(self) -> None:
         """
         Initialize the InterviewBot and its session state.
@@ -55,7 +55,6 @@ class InterviewBot:
             st.write("Failed to start chat with Character.AI.")
             return
 
-        # Adding a more friendly, human-like touch to the questions.
         questions = [
             "Hi! It's nice to meet you. Let's start with something simple: What is your name?",
             "Great, thanks for that! Now, can you tell me why you're interested in this job?",
@@ -87,7 +86,6 @@ class InterviewBot:
         answer = st.text_input("Your answer: ", key="input" + str(self.session_state['interview_step']))
 
         if answer:
-            # Adding a human-like acknowledgement to the user's input.
             acknowledgements = [
                 "Thanks for sharing that!",
                 "Got it, that sounds interesting.",
@@ -121,15 +119,14 @@ class InterviewBot:
         Generate an evaluation for the candidate based on their answers to the interview questions.
         """
         chat, new_chat, first_message = await self.start_chat()
-        
+
         if chat is None:
             st.write("Failed to start chat with Character.AI.")
             return ""
 
         interview_text = "".join([f"Question: {question}\nAnswer: {answer}\n" for (question, _), (answer, _) in zip(self.session_state['questions'], self.session_state['answers'])])
         response = await chat.send_message(self.char, new_chat.chat_id, interview_text)
-        
-        # Adding a more human-like response to the evaluation.
+
         evaluation_text = f"Thanks for your responses! Based on what you’ve shared, here’s my take:\n\n{response.text}\n\nHope that was helpful!"
         return evaluation_text
 
@@ -166,7 +163,6 @@ def create_bot() -> None:
     bot = InterviewBot()
 
     if len(bot.session_state['questions']) == 0:
-        # Adding a friendlier introduction.
         intro_text = "Hey there! I'm your friendly interviewer bot. I’ll ask you a few questions, and we’ll have a fun chat about your experience and skills. Let's get started!"
         filename = 'intro.wav'
         bot._text_to_speech(intro_text, filename)
@@ -178,5 +174,12 @@ def create_bot() -> None:
 
 
 # Streamlit UI
+
 st.title("InterviewBot - AI Interview Chatbot")
+
+# Use Railway's dynamic port from the environment variable
+port = int(os.environ.get('PORT', 8501))
+st.set_option('server.port', port)
+st.set_option('server.address', '0.0.0.0')
+
 create_bot()
