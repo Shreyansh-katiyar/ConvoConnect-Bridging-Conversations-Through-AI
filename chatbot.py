@@ -12,7 +12,7 @@ class InterviewBot:
     Class representing the Interview chatbot.
     """
     char = 'f4hEGbw8ywUrjsrye03EJxiBdooy--HiOWgU2EiRJ0s'
-    token = '67c42f8f986f526fe33a8630b9bdbbf97b219783'
+    token = '67c42f8f986f526fe33a8630b9bdbbf97b219783'                                                                                                                                             
     tts_engine = pyttsx3.init()
 
     async def start_chat(self):
@@ -27,9 +27,9 @@ class InterviewBot:
                 new_chat, first_message = await chat.new_chat(self.char, me.id)
                 return chat, new_chat, first_message
         except Exception as e:
-            st.write(f"An error occurred: {e}")
+            st.write(f"An error occurred: {e                                                        }")
             return None, None, None
-
+                      
     def __init__(self) -> None:
         """
         Initialize the InterviewBot and its session state.
