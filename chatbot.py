@@ -1,4 +1,3 @@
-from characterai import aiocai
 import asyncio
 import streamlit as st
 from streamlit_chat import message
@@ -7,6 +6,7 @@ import pyttsx3
 import speech_recognition as sr
 import requests
 import base64
+from streamlit.components.v1 import html
 
 st.title("InterviewBot - AI Interview Chatbot")
 
@@ -17,8 +17,6 @@ st.markdown(
     document.addEventListener('visibilitychange', function() {
       if (document.hidden) {
         alert("Warning: You have switched tabs. This is not allowed during the interview.");
-        // Optionally, report the tab switch to the backend
-        fetch('/report_tab_switch', { method: 'POST' });
       }
     });
     </script>
@@ -26,33 +24,22 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# JavaScript for automatic screen sharing
-st.markdown(
-    """
-    <script>
-    async function startScreenShare() {
-        try {
-            const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
-            console.log("Screen sharing started:", stream);
-            // Here you would connect the stream to your WebRTC setup
-            // This is just a placeholder for demonstration purposes
-        } catch (err) {
-            console.error("Error starting screen share:", err);
-        }
-    }
-
-    // Automatically start screen share when the page loads
-    window.onload = startScreenShare;
-    </script>
-    """,
-    unsafe_allow_html=True
-)
+# Camera feed function
+def show_live_camera_feed():
+    """Displays a live camera feed in the sidebar."""
+    with st.sidebar:
+        st.subheader("Live Camera Feed")
+        st.markdown(
+            '''
+            <iframe src="http://127.0.0.1:5000/video_feed" width="320" height="240" frameborder="0"></iframe>
+            ''',
+            unsafe_allow_html=True
+        )
 
 class InterviewBot:
-    char = 'f4hEGbw8ywUrjsrye03EJxiBdooy--HiOWgU2EiRJ0s'  # Character ID
-    token = '67c42f8f986f526fe33a8630b9bdbbf97b219783'  # API token
     tts_engine = pyttsx3.init()
-    did_api_key = 'ew9nyw5zahniyxnretjaz21hawwuy29t:uLUZOCoiV5spKOw_hWegr'  # D-ID API key (username:password)
+    did_api_key = 'ew9nyw5zahniyxnretjaz21hawwuy29t:uLUZOCoiV5spKOw_hWegr'  # D-ID API key
+    meta_api_key = 'your_meta_api_token_here'  # Replace this with your Meta AI token
 
     def __init__(self) -> None:
         if 'questions' not in st.session_state:
@@ -63,18 +50,6 @@ class InterviewBot:
             st.session_state['interview_step'] = 0
 
         self.session_state = st.session_state
-
-    async def start_chat(self):
-        """Connect to Character.AI and start a chat."""
-        try:
-            client = aiocai.Client(self.token)
-            me = await client.get_me()  # Retrieve your user information
-            async with client as conn:
-                new_chat = await conn.create_chat(self.char)  # Create a new chat using the character ID
-                return conn, new_chat
-        except Exception as e:
-            st.write(f"An error occurred during chat connection: {e}")
-            return None, None
 
     async def prepare_questions(self) -> None:
         """Prepares a list of predefined questions."""
@@ -121,29 +96,34 @@ class InterviewBot:
         except sr.RequestError as e:
             st.write(f"Could not request results; {e}")
 
+    def get_meta_ai_response(self, prompt: str) -> str:
+        """Query Meta AI and get the response."""
+        url = 'https://api.metaai.com/ask'
+        headers = {'Authorization': f'Bearer {self.meta_api_key}', 'Content-Type': 'application/json'}
+        data = {"prompt": prompt}
+
+        response = requests.post(url, json=data, headers=headers)
+        
+        if response.status_code == 200:
+            return response.json().get('response', 'No response found')
+        else:
+            return f"Error: {response.status_code} - {response.text}"
+
     async def ask_dynamic_question(self, user_answer: str) -> None:
         """Ask a dynamic question based on the user's answer."""
-        conn, new_chat = await self.start_chat()
-        if conn and new_chat:
-            try:
-                past_interactions = "\n".join(
-                    [f"Q: {q[0]}\nA: {a[0]}" for q, a in zip(self.session_state['questions'], self.session_state['answers'])]
-                )
-                prompt = f"{past_interactions}\nQ: {user_answer}\nA:"
-                response = await new_chat.send_message(self.char, new_chat.id, prompt)
-
-                if response and hasattr(response, 'text'):
-                    follow_up = response.text.strip()
-                    self.session_state['questions'].append((follow_up, self._generate_uuid()))
-                    st.write(f"Bot: {follow_up}")
-                    self._text_to_speech(follow_up)
-                    await self.generate_avatar_video(follow_up)
-                else:
-                    st.write("No valid response from Character.AI.")
-            except Exception as e:
-                st.write(f"An error occurred while sending the message: {e}")
-        else:
-            st.write("Failed to connect to the chat.")
+        try:
+            prompt = f"{user_answer}"
+            response = self.get_meta_ai_response(prompt)
+            if response:
+                follow_up = response.strip()
+                self.session_state['questions'].append((follow_up, self._generate_uuid()))
+                st.write(f"Bot: {follow_up}")
+                self._text_to_speech(follow_up)
+                await self.generate_avatar_video(follow_up)
+            else:
+                st.write("No valid response from Meta AI.")
+        except Exception as e:
+            st.write(f"An error occurred while sending the message: {e}")
 
     async def generate_avatar_video(self, text: str) -> None:
         """Generate a video of the avatar speaking the given text."""
@@ -154,16 +134,22 @@ class InterviewBot:
             'Content-Type': 'application/json'
         }
         data = {
-            "source_url": "https://studio.d-id.com/agents/share?id=agt_LUCbkxOQ&key=WjI5dloyeGxMVzloZFhSb01ud3hNRGs0TmpJNU1EYzRNelkxTVRBME1EVXlNams2TVVFMU5VbHFNWEpUV1hSeU1rRnhialF3WkUwMA==",
-            "text": text,
-            "driver_url": "bank://default"
+            "source_url": "https://media.istockphoto.com/id/1949501832/photo/handsome-hispanic-senior-business-man-with-crossed-arms-smiling-at-camera-indian-or-latin.jpg?s=2048x2048&w=is&k=20&c=nA6_fHYssGdzGF5GHu_l0Y8yVli4ndT4mV-WRPxarlk=",
+            "script": {
+                "type": "text",
+                "input": text
+            }
         }
 
         response = requests.post(url, json=data, headers=headers)
+        st.write(response.json())  # Print the full API response for debugging
 
         if response.status_code == 200:
             video_url = response.json().get("result_url")
             st.write(f"Avatar video generated: {video_url}")
+
+            if video_url:
+                st.video(video_url)  # Display the video in Streamlit
         else:
             st.write(f"Error generating avatar video: {response.text}")
 
@@ -203,17 +189,6 @@ def create_bot() -> None:
         asyncio.run(bot.prepare_questions())
 
     bot.execute_interview()
-
-def show_live_camera_feed():
-    """Displays a live camera feed in the sidebar."""
-    with st.sidebar:
-        st.subheader("Live Camera Feed")
-        st.markdown(
-            '''
-            <iframe src="http://127.0.0.1:5000/video_feed" width="320" height="240" frameborder="0"></iframe>
-            ''',
-            unsafe_allow_html=True
-        )
 
 # Streamlit UI
 show_live_camera_feed()
