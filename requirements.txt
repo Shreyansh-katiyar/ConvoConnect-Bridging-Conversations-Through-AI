@@ -68,4 +68,5 @@ deepface
 pandas
 openpyxl 
 PyAudio
+characterai
 
