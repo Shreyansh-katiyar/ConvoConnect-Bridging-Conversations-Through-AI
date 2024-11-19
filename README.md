@@ -36,7 +36,6 @@ apt install python3.8-venv
 python3 -m venv myenv
 source myenv/bin/activate
 pip install -r requirements.txt
-export OPENAI_API_KEY=<your secret key>
 streamlit run chatbot.py
 ```
 
@@ -46,7 +45,6 @@ streamlit run chatbot.py
 python3.8 -m venv myenv
 myenv\Scripts\activate
 pip install -r requirements.txt
-export OPENAI_API_KEY=<your secret key>
 streamlit run chatbot.py
 ```
 
@@ -56,35 +54,24 @@ streamlit run chatbot.py
 python3.8 -m venv myenv
 source myenv/bin/activate
 pip install -r requirements.txt
-export OPENAI_API_KEY=<your secret key>
 streamlit run chatbot.py
 ```
-
-Remember to replace `<your secret key>` with your actual OpenAI API Key.
-
-
 ## Troubleshooting
 
 If you encounter errors while installing the dependencies from `requirements.txt`, try installing the packages individually using the following commands:
 
 ```bash
-pip install openai
+pip install characterai
 pip install streamlit
 pip install streamlit-chat
 ```
 
-Then, export your OpenAI API Key and run the chatbot:
-```bash
-export OPENAI_API_KEY=<your secret key>
-streamlit run chatbot.py
-```
-Remember to replace `<your secret key>` with your actual OpenAI API Key.
 
 
 ## Directory Tree
 ```
 ├── images
-│   ├── openai.png
+│   ├── characterai.png
 │   ├── streamlit.jpg
 ├── .gitignore
 ├── chatbot.py
@@ -94,11 +81,7 @@ Remember to replace `<your secret key>` with your actual OpenAI API Key.
 └── README.md
 ```
 
-## Bug / Feature Request
-If you find a bug (the website couldn't handle the query and / or gave undesired results), kindly open an issue [here](https://github.com/nehalvaghasiya/interview-bot/issues/new) by including your search query and the expected result.
 
-If you'd like to request a new function, feel free to do so by opening an issue [here](https://github.com/nehalvaghasiya/interview-bot/issues/new). Please include sample queries and their corresponding results.
 
-## Technologies Used
 
-<img src="images/openai.png" width="125"/><img src="images/streamlit.jpg" width="210"/> 
+
