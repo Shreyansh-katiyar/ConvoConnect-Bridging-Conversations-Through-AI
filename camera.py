@@ -21,6 +21,8 @@ def create_excel_file():
 
 create_excel_file()
 
+# to show video in chatbot
+
 def generate_frames():
     cap = cv2.VideoCapture(0)  # 0 for default webcam
 

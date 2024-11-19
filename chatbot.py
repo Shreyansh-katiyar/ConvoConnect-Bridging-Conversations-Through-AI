@@ -7,7 +7,7 @@ from streamlit_chat import message
 from characterai import aiocai
 import time
 
-st.title("InterviewBot - AI Interview Chatbot")
+st.title("InterviewBot - AI Interviewer")
 
 # JavaScript for tab switching alert
 st.markdown(
@@ -41,6 +41,9 @@ class InterviewBot:
     tts_engine = pyttsx3.init()
     did_api_key = 'ew9nyw5zahniyxnretjaz21hawwuy29t:uLUZOCoiV5spKOw_hWegr'  # D-ID API key
 
+    interviewer_icon_path = "C:\\Users\\yogan\\Downloads\\male-avatar-rgb-color-icon-human-resources-for-job-employee-for-company-career-corporate-businessman-man-for-interview-manager-in-suit-person-head-isolated-vector-illustration-700-219045181.jpg"
+    interviewee_icon_path = "C:\\Users\\yogan\\Downloads\\2303808.png"
+
     def __init__(self) -> None:
         if 'questions' not in st.session_state:
             st.session_state['questions'] = []
@@ -64,71 +67,93 @@ class InterviewBot:
             return None, None
 
     async def prepare_questions(self) -> None:
-        """Prepares a list of predefined questions."""
+        """Prepares a list of predefined questions, including technical questions."""
         questions = [
+            # General and behavioral questions
             "Hi! It's nice to meet you. What's your name?",
             "Why are you interested in this job?",
-            "What skills do you bring to the table? and how would you rate yourself in the following areas:",
-            "What do you think is your greatest strength?",
-            "Can you describe a time when you faced a challenge at work and how you overcame it?",
-            "How do you handle stress and pressure?",
+            "Can you tell me a bit about yourself?",
+            "What do you consider your greatest strength?",
+            "What is one of your weaknesses, and how do you manage it?",
+            "What is your preferred working style?",
+            "Tell me about a time you overcame a significant challenge.",
+            "How do you handle tight deadlines and pressure?",
+            "What motivates you to perform well in a job?",
+            "How do you prioritize your tasks?",
             "Where do you see yourself in five years?",
-            "Why should we hire you?",
-            "What motivates you to perform your best at work?",
-            "Describe a project or task that you worked on that required creativity.",
-            "What is your approach to team collaboration?",
-            "How do you stay organized when managing multiple tasks?",
-            "Have you ever had to deal with difficult coworkers? How did you handle it?",
-            "What is your greatest professional achievement?",
-            "How do you keep up with industry trends?",
-            "What kind of work environment do you thrive in?",
-            "What is the most important thing for a manager to do to be effective?",
-            "How do you prioritize tasks when dealing with multiple deadlines?",
-            "Tell me about a time when you had to learn a new skill or tool quickly.",
-            "What are your expectations from this role?",
-            "How do you handle criticism?",
-            "What are your salary expectations?",
-            "What do you consider to be the key to effective leadership?",
-            "How do you approach problem-solving?",
-            "Can you provide an example of how you worked effectively under pressure?",
-            "How do you stay motivated when performing repetitive tasks?",
-            "How would you describe your work style?",
-            "What would your colleagues say about you?",
-            "Have you ever worked on a project that didn't go as planned? How did you handle it?",
-            "What skills do you want to develop in the next year?",
-            "What was the most challenging part of your previous job?",
-            "Can you describe a time when you worked with a cross-functional team?",
-            "What was the biggest challenge in your last job, and how did you overcome it?",
-            "What type of work culture do you prefer?",
-            "Can you give an example of a time when you had to adapt to a significant change?",
-            "How do you ensure the quality of your work?",
-            "What do you think is the most important factor for success in this role?",
-            "Describe a time when you took the initiative on a project.",
-            "How do you handle multiple projects at the same time?",
-            "What was the most difficult decision you've had to make at work?",
-            "What makes you a good fit for this company?",
-            "What are your strengths and weaknesses?",
-            "What do you hope to achieve in this role?",
-            "What makes you excited about this job?",
-            "Tell me about a time when you worked with a team to accomplish a goal.",
-            "How do you approach learning new things?",
-            "What excites you most about working here?",
-            "Tell me about a time when you worked under tight deadlines.",
-            "How do you handle a situation where you disagree with a colleague?",
-            "What are the key qualities you think are necessary for success in this industry?",
-            "What can you bring to the team that others cannot?",
-            "What role do you typically play in a team?",
-            "Can you describe a time when you made a mistake at work and how you corrected it?",
-            "What do you know about our company and the role you're applying for?"
+            "Describe a successful project you've worked on.",
+            "Tell me about a time you faced a conflict at work.",
+            "How do you handle constructive criticism?",
+            "What do you like to do outside of work?",
+            "How do you keep yourself updated with industry trends?",
+            "Tell me about a time when you had to learn a new skill quickly.",
+            "How would your previous coworkers describe you?",
+            "What would you consider your ideal work environment?",
+            "Why do you think you'd be a good fit for our company?",
+            
+            # Technical questions - Python
+            "Can you explain the concept of Python decorators?",
+            "What are Python list comprehensions, and why are they useful?",
+            "How does error handling work in Python, and when would you use try-except?",
+            "What is the difference between a list and a tuple in Python?",
+            "How do you use lambda functions in Python?",
+            "Explain the difference between '==' and 'is' in Python.",
+            "What are Python generators, and how do they work?",
+            "How does memory management work in Python?",
+            "What is the purpose of Python's `with` statement?",
+            "How would you use `map`, `filter`, and `reduce` functions in Python?",
+
+            # Technical questions - JavaScript
+            "What is the difference between `var`, `let`, and `const` in JavaScript?",
+            "How does JavaScript handle asynchronous operations?",
+            "What is the concept of closures in JavaScript?",
+            "Can you explain the JavaScript `this` keyword?",
+            "What is the difference between `==` and `===` in JavaScript?",
+            "How do promises work in JavaScript, and what are async/await functions?",
+            "What is event delegation in JavaScript?",
+            "Explain JavaScript's `call`, `apply`, and `bind` methods.",
+            "How would you prevent an event from bubbling up in JavaScript?",
+            "What are JavaScript arrow functions, and how do they differ from regular functions?",
+
+            # Technical questions - SQL
+            "What is the difference between `INNER JOIN` and `OUTER JOIN` in SQL?",
+            "How would you write a query to find duplicate records in a table?",
+            "What are indexes in SQL, and why are they important?",
+            "Explain the difference between `HAVING` and `WHERE` clauses in SQL.",
+            "How do you perform a left join in SQL?",
+            "What are stored procedures, and when would you use them?",
+            "How would you retrieve the top N records from a table?",
+            "Explain SQL transactions and their purpose.",
+            "What is a primary key, and how does it differ from a unique key?",
+            "How would you update records in SQL based on another table?",
+            
+            # Additional questions to reach 50
+            "What do you consider the most important factor in teamwork?",
+            "Describe your process for troubleshooting technical issues.",
+            "How do you approach learning new programming languages or technologies?",
+            "What tools or practices do you use to improve code quality?",
+            "Explain a time when you went above and beyond in a project.",
+            "What are your strategies for managing and organizing code?",
+            "How would you go about refactoring legacy code?",
+            "What methods do you use to ensure your work is efficient and effective?",
+            "Have you contributed to open-source projects? If so, tell me about it.",
+            "What projects are you currently working on in your spare time?",
         ]
         self.session_state['questions'] = [(question, self._generate_uuid()) for question in questions]
+
 
     def ask_question(self) -> None:
         """Ask the current interview question."""
         if self.session_state['interview_step'] < len(self.session_state['questions']):
             text, key = self.session_state['questions'][self.session_state['interview_step']]
             self._text_to_speech(text)
-            message(text, key=f'message_{key}')
+            # Display interviewer message with icon
+            st.markdown(f"""
+            <div style="display: flex; align-items: center;">
+                <img src="data:image/png;base64,{self._image_to_base64(self.interviewer_icon_path)}" width="40" style="border-radius: 50%; margin-right: 10px;">
+                <p>{text}</p>
+            </div>
+            """, unsafe_allow_html=True)
             st.session_state['current_question'] = text
             st.write(f"Bot: {text}")
 
@@ -163,12 +188,23 @@ class InterviewBot:
         """Displays the conversation so far."""
         for i in range(self.session_state['interview_step']):
             question_text, question_key = self.session_state['questions'][i]
-            message(question_text, key=f'message_{question_key}')
+            # Display interviewer message with icon
+            st.markdown(f"""
+            <div style="display: flex; align-items: center;">
+                <img src="data:image/png;base64,{self._image_to_base64(self.interviewer_icon_path)}" width="40" style="border-radius: 50%; margin-right: 10px;">
+                <p>{question_text}</p>
+            </div>
+            """, unsafe_allow_html=True)
 
             if i < len(self.session_state['answers']):
                 answer_text, answer_key = self.session_state['answers'][i]
-                message(answer_text, is_user=True, key=f'message_{answer_key}')
-                st.write(f"You: {answer_text}")
+                # Display interviewee message with icon
+                st.markdown(f"""
+                <div style="display: flex; align-items: center;">
+                    <img src="data:image/png;base64,{self._image_to_base64(self.interviewee_icon_path)}" width="40" style="border-radius: 50%; margin-right: 10px;">
+                    <p>{answer_text}</p>
+                </div>
+                """, unsafe_allow_html=True)
 
     def execute_interview(self) -> None:
         """Run the interview by displaying past questions, asking the next one, and getting audio input."""
@@ -184,6 +220,12 @@ class InterviewBot:
         else:
             st.write("Interview complete!")
 
+    def _image_to_base64(self, image_path):
+        """Convert image file to base64 format."""
+        import base64
+        with open(image_path, "rb") as img_file:
+            return base64.b64encode(img_file.read()).decode('utf-8')
+
     @staticmethod
     def _generate_uuid() -> str:
         """Generate a UUID for unique identification."""
@@ -195,8 +237,13 @@ def create_bot() -> None:
     if len(bot.session_state['questions']) == 0:
         intro_text = "Hey there! I'm your friendly interviewer bot. Let’s get started!"
         bot._text_to_speech(intro_text)
-        message(intro_text, key="greeting")
-        st.write(intro_text)
+        # Display interviewer greeting with icon
+        st.markdown(f"""
+        <div style="display: flex; align-items: center;">
+            <img src="data:image/png;base64,{bot._image_to_base64(bot.interviewer_icon_path)}" width="40" style="border-radius: 50%; margin-right: 10px;">
+            <p>{intro_text}</p>
+        </div>
+        """, unsafe_allow_html=True)
         asyncio.run(bot.prepare_questions())
 
     bot.execute_interview()
