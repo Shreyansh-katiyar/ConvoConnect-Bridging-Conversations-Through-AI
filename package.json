@@ -1,28 +1,35 @@
 {
-  "name": "resume-parser",
-  "version": "1.0.0",
-  "description": "CV parser for Code4goal challenge",
-  "main": "app.js",
+  "name": "vite-project",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
-  },
-  "author": "Alexey Lizurchik <al.lizurchik@gmail.com>",
-  "license": "MIT",
-  "devDependencies": {
-    "gulp": "^3.9.1",
-    "gulp-run": "^1.6.6",
-    "gulp-util": "^1.0.0"
+    "start": "react-scripts start",
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "cheerio": "^1.0.0-rc.12",
-    "colors": "^1.0.3",
-    "mime": "^1.2.11",
-    "request": "^2.53.0",
-    "textract": "^2.5.0",
-    "underscore": "^1.7.0",
-    "unzip": "^0.1.11",
-    "update": "^0.4.2",
-    "util": "^0.12.5"
+    "axios": "^1.7.7",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-icons": "^5.3.0",
+    "react-router-dom": "^6.28.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.13.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.3",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.13.0",
+    "eslint-plugin-react": "^7.37.2",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-react-refresh": "^0.4.14",
+    "globals": "^15.11.0",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.14",
+    "vite": "^5.4.10"
   }
 }
