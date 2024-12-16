@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tab Switch Test</title>
+    <script>
+    console.log('Basic tab switch detection script loaded.'); // Log to verify script loading
+
+    document.addEventListener('visibilitychange', function() {
+        console.log('Basic visibility change detected.'); // Log to verify event triggering
+        if (document.hidden) {
+            alert('Tab switch detected! Please stay on the interview tab.');
+        }
+    });
+    </script>
+</head>
+<body>
+    <h1>Tab Switch Test</h1>
+    <p>Switch tabs to see if the alert triggers.</p>
+</body>
+</html>

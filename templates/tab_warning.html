@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript">
+        window.onload = function() {
+            console.log("Tab detection script loaded");
+            alert("Interview tab monitoring is now active");
+            
+            document.addEventListener("visibilitychange", function() {
+                console.log("Visibility state changed");
+                if (document.hidden) {
+                    console.log("Tab switched");
+                    alert("WARNING: Tab switching detected! Please return to the interview tab.");
+                }
+            });
+        };
+    </script>
+</head>
+<body>
+    <div id="tab-monitor"></div>
+</body>
+</html>

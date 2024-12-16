@@ -1,17 +1,29 @@
-def vehicleslam(vehicles):
-    stack = []
-    for vehicle in vehicles:
-        while stack and vehicle < 0 < stack[-1]:  # Collision condition
-            if abs(vehicle) > abs(stack[-1]):  # Current vehicle is faster
-                stack.pop()  # Remove the last vehicle
-                continue  # Check the current vehicle again
-            elif abs(vehicle) == abs(stack[-1]):  # Same speed
-                stack.pop()  # Both vehicles are removed
-            break  # No more collisions possible
-        else:
-            stack.append(vehicle)  # No collision, add vehicle to stack
-    return stack
+def is_smart_city_possible(tower_heights):
+    N = len(tower_heights)
+    if N % 2 != 0:
+        return False
+    M = N // 2
+    left_half = sorted(tower_heights[:M])
+    right_half = sorted(tower_heights[M:])
+    return left_half == right_half
 
-ls = [3,-2,0,4]
-a = vehicleslam(ls)
-print(a)
+
+def main():
+    T = int(input())
+    results = []
+
+    for _ in range(T):
+        N = int(input())
+        tower_heights = list(map(int, input().split()))
+
+        if is_smart_city_possible(tower_heights):
+            results.append("YES")
+        else:
+            results.append("NO")
+
+    for result in results:
+        print(result)
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,14 @@
+# Core AI and Machine Learning Libraries
+torch==2.0.1
+torchvision==0.15.2
+numpy==1.24.3
+scipy==1.10.1
+
+# Audio and Video Processing
+librosa==0.10.0
+opencv-python==4.7.0.72
+matplotlib==3.7.1
+
+# Simplified Lip-Sync Dependencies
+soundfile==0.12.1
+audioread==3.0.0
